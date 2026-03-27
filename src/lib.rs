@@ -282,3 +282,12 @@ impl From<Icon> for egui::RichText {
         icon.regular()
     }
 }
+
+/// Converts an Icon to WidgetText using the regular font style by default.
+///
+/// This allows Icons to be used directly where WidgetText is expected (e.g., in Button).
+impl From<Icon> for egui::WidgetText {
+    fn from(icon: Icon) -> Self {
+        egui::WidgetText::RichText(std::sync::Arc::new(icon.regular()))
+    }
+}
