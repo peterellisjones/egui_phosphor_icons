@@ -108,11 +108,30 @@ A type representing a Phosphor icon. All icons in the `icons` module are of this
 - `.fill()` -> `RichText` - Renders with fill style (requires `fill` feature)
 - `.light()` -> `RichText` - Renders with light style (requires `light` feature)
 - `.thin()` -> `RichText` - Renders with thin style (requires `thin` feature)
+- `Icon::from_name(name: &str)` -> `Option<Icon>` - Looks up an icon by string name
+- `Icon::names()` -> `Iterator<&'static str>` - Returns an iterator over all icon names
 
-Icons automatically convert to `RichText` with regular style via `Into`, so you can use them directly:
+Icons automatically convert to `RichText` and `WidgetText` with regular style via `Into`, so you can use them directly:
 
 ```rust
-ui.label(icons::HOUSE);  // Equivalent to icons::HOUSE.regular()
+ui.label(icons::HOUSE);              // Direct usage (uses regular style)
+ui.label(icons::HOUSE.regular());    // Explicit (equivalent)
+```
+
+#### String Lookup
+
+You can look up icons by their string names (kebab-case), which is useful for serialization or configuration files:
+
+```rust
+// Look up by name (kebab-case)
+if let Some(icon) = Icon::from_name("arrow-up-left") {
+    ui.label(icon.regular());
+}
+
+// Get all available icon names
+for name in Icon::names() {
+    println!("{}", name);
+}
 ```
 
 ## Usage with bevy_egui
@@ -161,6 +180,7 @@ fn ui_system(mut egui_contexts: Query<&mut EguiContext>) {
 ```
 
 **Key points for bevy_egui integration:**
+
 - Add the font configuration in a system that runs on `Added<PrimaryEguiContext>` to ensure it only runs once
 - Query for `&mut EguiContext` and call `ctx.get_mut()` to access the egui context
 - Icons can then be used normally in any system that has access to the egui context

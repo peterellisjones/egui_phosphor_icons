@@ -6,16 +6,20 @@
 //!
 //! - **Multiple font styles**: Regular, Bold, Fill, Light, and Thin variants
 //! - **Feature flags**: Control which font styles are included to reduce binary size
+//! - **String lookup**: Look up icons by name for serialization/configuration support
 //!
 //! ## Quick Start
 //!
 //! ```no_run
-//! use egui_phosphor_icons::{add_fonts, icons};
+//! use egui_phosphor_icons::{add_fonts, icons, Icon};
+//! # fn setup_fonts(ctx: &egui::Context) {
 //!
 //! // Setup fonts (call once during initialization)
 //! let mut fonts = egui::FontDefinitions::default();
 //! add_fonts(&mut fonts);
 //! ctx.set_fonts(fonts);
+//! # }
+//! # fn ui_example(ui: &mut egui::Ui) {
 //!
 //! // Use icons in your UI
 //! ui.label(icons::HOUSE);              // Regular style (default)
@@ -26,6 +30,12 @@
 //!
 //! // Chain with RichText methods
 //! ui.label(icons::HEART.fill().color(egui::Color32::RED).size(32.0));
+//!
+//! // Look up icons by string name (kebab-case)
+//! if let Some(icon) = Icon::from_name("arrow-up-left") {
+//!     ui.label(icon.regular());
+//! }
+//! # }
 //! ```
 //!
 //! ## Feature Flags
@@ -50,7 +60,7 @@
 //!
 //! When using this library with [bevy_egui](https://github.com/mvlabat/bevy_egui), configure fonts during initialization:
 //!
-//! ```no_run
+//! ```ignore
 //! use bevy::prelude::*;
 //! use bevy_egui::{EguiContext, EguiPlugin, PrimaryEguiContext, egui};
 //! use egui_phosphor_icons::{add_fonts, icons};
@@ -102,16 +112,20 @@ const PHOSPHOR_THIN_NAME: &str = "phosphor-thin";
 /// # Example
 /// ```no_run
 /// use egui_phosphor_icons::{add_fonts, icons};
+/// # fn setup_fonts(ctx: &egui::Context) {
 ///
 /// let mut fonts = egui::FontDefinitions::default();
 /// add_fonts(&mut fonts);
 /// // Then set the fonts on your context:
-/// // ctx.set_fonts(fonts);
+/// ctx.set_fonts(fonts);
+/// # }
+/// # fn ui_example(ui: &mut egui::Ui) {
 ///
 /// // Use icons with different styles:
-/// // ui.label(icons::HOUSE.regular());
-/// // ui.label(icons::HOUSE.bold());  // Requires "bold" feature
-/// // ui.label(icons::HOUSE.fill());  // Requires "fill" feature
+/// ui.label(icons::HOUSE.regular());
+/// ui.label(icons::HOUSE.bold());  // Requires "bold" feature
+/// ui.label(icons::HOUSE.fill());  // Requires "fill" feature
+/// # }
 /// ```
 pub fn add_fonts(fonts: &mut egui::FontDefinitions) {
     // Load phosphor icons fonts (regular is always included)
@@ -263,6 +277,41 @@ impl Icon {
     pub fn thin(self) -> egui::RichText {
         egui::RichText::new(self.0).family(egui::FontFamily::Name(PHOSPHOR_THIN_NAME.into()))
     }
+
+    /// Looks up an icon by its string name using kebab-case (e.g., "arrow-up-left").
+    ///
+    /// Returns `Some(Icon)` if the name exists, `None` otherwise.
+    /// This is useful for loading icons from serializable formats like JSON or configuration files.
+    ///
+    /// # Example
+    /// ```
+    /// use egui_phosphor_icons::Icon;
+    ///
+    /// let icon = Icon::from_name("arrow-up-left").unwrap();
+    /// // ui.label(icon.regular());
+    ///
+    /// let icon = Icon::from_name("house").unwrap();
+    /// // ui.label(icon.fill());
+    /// ```
+    pub fn from_name(name: &str) -> Option<Icon> {
+        icons::icon_map().get(name).copied()
+    }
+
+    /// Returns an iterator over all available icon names.
+    ///
+    /// Useful for debugging, documentation, or building icon pickers.
+    ///
+    /// # Example
+    /// ```
+    /// use egui_phosphor_icons::Icon;
+    ///
+    /// for name in Icon::names() {
+    ///     println!("{}", name);
+    /// }
+    /// ```
+    pub fn names() -> impl Iterator<Item = &'static str> {
+        icons::icon_map().keys().copied()
+    }
 }
 
 /// Converts an Icon to RichText using the regular font style by default.
@@ -273,12 +322,30 @@ impl Icon {
 /// ```no_run
 /// use egui_phosphor_icons::icons;
 ///
-/// // These are equivalent:
-/// // ui.label(icons::HOUSE);
-/// // ui.label(icons::HOUSE.regular());
+/// let rich_text: egui::RichText = icons::HOUSE.into();
 /// ```
 impl From<Icon> for egui::RichText {
     fn from(icon: Icon) -> Self {
         icon.regular()
+    }
+}
+
+/// Converts an Icon to WidgetText using the regular font style by default.
+///
+/// This allows Icons to be used directly in any egui widget that accepts WidgetText.
+///
+/// # Example
+/// ```no_run
+/// use egui_phosphor_icons::icons;
+/// # fn ui_example(ui: &mut egui::Ui) {
+///
+/// // Icons work directly in labels, buttons, etc.
+/// ui.label(icons::HOUSE);
+/// ui.button(icons::GEAR);
+/// # }
+/// ```
+impl From<Icon> for egui::WidgetText {
+    fn from(icon: Icon) -> Self {
+        icon.regular().into()
     }
 }

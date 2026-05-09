@@ -1,6 +1,6 @@
 [package]
 name = "egui_phosphor_icons"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 authors = ["Your Name <your.email@example.com>"]
 description = "Phosphor Icons for egui - A flexible icon library with multiple font styles"
@@ -11,7 +11,7 @@ categories = ["gui", "graphics"]
 readme = "README.md"
 
 [dependencies]
-egui = "^0.33"
+egui = "^0.34"
 
 [features]
 default = ["bold", "fill", "light", "thin"]
