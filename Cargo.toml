@@ -1,11 +1,11 @@
 [package]
 name = "egui_phosphor_icons"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
-authors = ["Your Name <your.email@example.com>"]
+authors = ["Peter Jones <pete@peterellisjones.com>"]
 description = "Phosphor Icons for egui - A flexible icon library with multiple font styles"
 license = "MIT"
-repository = "https://github.com/yourusername/egui_phosphor_icons"
+repository = "https://github.com/peterellisjones/egui_phosphor_icons"
 keywords = ["egui", "icons", "phosphor", "gui", "ui"]
 categories = ["gui", "graphics"]
 readme = "README.md"
