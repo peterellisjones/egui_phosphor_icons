@@ -11,7 +11,13 @@ categories = ["gui", "graphics"]
 readme = "README.md"
 
 [dependencies]
-egui = "^0.34"
+# `default-features = false` drops egui's `default_fonts` feature (which embeds
+# Hack/Ubuntu/NotoEmoji into epaint). This crate only uses egui's core types
+# (FontData, FontDefinitions, FontFamily, RichText, WidgetText), none of which
+# require default_fonts — so consumers that build their own font set from
+# `FontDefinitions::empty()` are no longer forced to embed egui's bundled fonts
+# via feature unification.
+egui = { version = "^0.34", default-features = false }
 
 [features]
 default = ["bold", "fill", "light", "thin"]
