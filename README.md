@@ -234,6 +234,10 @@ ui.horizontal(|ui| {
 });
 ```
 
+## AI assistance
+
+This crate was developed with the help of AI coding tools.
+
 ## License
 
 This library packages the Phosphor Icons font files. Phosphor Icons are licensed under the MIT License. See the [Phosphor Icons repository](https://github.com/phosphor-icons/core) for details.
