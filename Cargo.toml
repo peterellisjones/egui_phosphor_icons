@@ -1,6 +1,6 @@
 [package]
 name = "egui_phosphor_icons"
-version = "0.4.0"
+version = "0.5.0"
 edition = "2021"
 authors = ["Peter Jones <pete@peterellisjones.com>"]
 description = "Phosphor Icons for egui - A flexible icon library with multiple font styles"
@@ -17,7 +17,7 @@ readme = "README.md"
 # require default_fonts — so consumers that build their own font set from
 # `FontDefinitions::empty()` are no longer forced to embed egui's bundled fonts
 # via feature unification.
-egui = { version = "^0.35", default-features = false }
+egui = { version = "^0.36", default-features = false }
 
 [features]
 default = ["bold", "fill", "light", "thin"]
